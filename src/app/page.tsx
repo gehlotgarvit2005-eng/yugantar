@@ -61,7 +61,7 @@ export default function Home() {
                   textShadow: "0 0 80px rgba(255,59,48,0.15), 0 0 40px rgba(255,179,71,0.08)",
                 }}
                 initial={{ opacity: 0, y: 50, scale: 0.9, filter: "blur(12px)" }}
-                whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                 viewport={{ once: true }}
                 transition={{
                   duration: 0.6,
@@ -191,7 +191,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
             >
@@ -228,7 +228,7 @@ export default function Home() {
           {/* View all link */}
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
             className="mt-14 text-center"
@@ -256,7 +256,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
             >

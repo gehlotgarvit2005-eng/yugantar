@@ -191,24 +191,24 @@ export function TeamSection() {
         <div className="text-center mb-16 max-w-2xl">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 0.8, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 0.8, y: 0 }}
+            transition={{ duration: 0.5 }}
             className="text-xs uppercase tracking-widest text-secondary font-semibold block mb-3"
           >
             Behind the Curtain
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 uppercase bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent"
           >
             THE MINDS BEHIND YUGANTAR
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.6 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 0.6 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-sm text-text-tertiary leading-relaxed"
           >
             Meet the visionaries, creators, and innovators driving the future of YUGANTAR 2026.
@@ -219,8 +219,7 @@ export function TeamSection() {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
+          animate="show"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full"
         >
           {teamMembers.map((member) => (

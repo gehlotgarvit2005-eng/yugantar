@@ -36,12 +36,11 @@ export function ScrollReveal({
         opacity: 0,
         ...directionMap[direction],
       }}
-      whileInView={{
+      animate={{
         opacity: 1,
         x: 0,
         y: 0,
       }}
-      viewport={{ once, margin: "-80px" }}
       transition={{
         duration,
         delay,

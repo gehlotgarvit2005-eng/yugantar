@@ -373,24 +373,24 @@ export function EventCountdownTimeline() {
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 0.8, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 0.8, y: 0 }}
+            transition={{ duration: 0.5 }}
             className="text-xs uppercase tracking-widest text-primary font-semibold block mb-3"
           >
             Chronicle of Launch
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4"
           >
             Countdown to Yugantar
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.6 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 0.6 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-sm text-text-tertiary max-w-md mx-auto leading-relaxed"
           >
             Watch the clock wind down as we prepare to launch the future of open technology.
@@ -584,9 +584,8 @@ export function EventCountdownTimeline() {
                   {/* Milestone Card */}
                   <motion.div
                     initial={{ opacity: 0, x: isEven ? -40 : 40, scale: 0.95 }}
-                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-120px" }}
-                    transition={{ type: "spring", duration: 0.6, delay: 0.1 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ type: "spring", duration: 0.6, delay: idx * 0.08 }}
                     className={`w-[calc(100%-40px)] md:w-[45%] ml-12 md:ml-0 p-6 rounded-2xl border border-white/[0.06] bg-neutral-900/10 backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-[1.01] hover:border-primary/40 hover:shadow-[0_0_30px_rgba(0,242,254,0.08)] cursor-default group`}
                     style={{ transformOrigin: isEven ? "right center" : "left center" }}
                     whileHover={{ rotate: isEven ? -0.8 : 0.8 }}

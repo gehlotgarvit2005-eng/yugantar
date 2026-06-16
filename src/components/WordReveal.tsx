@@ -28,8 +28,7 @@ export function WordReveal({
     return (
       <motion.div
         initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        viewport={{ once, margin: "-60px" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }}
       >
         <Tag className={className}>{text}</Tag>
@@ -47,8 +46,7 @@ export function WordReveal({
           key={i}
           className={cn("inline-block", letterClassName)}
           initial={{ opacity: 0, y: mode === "word" ? 30 : 20, filter: "blur(4px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          viewport={{ once, margin: "-60px" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{
             duration: 0.5,
             delay: delay + i * stagger,
@@ -81,8 +79,7 @@ export function FadeInView({
   return (
     <motion.div
       initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}
     >
@@ -101,8 +98,7 @@ export function ScaleInView({ children, className, delay = 0 }: ScaleInViewProps
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}
     >
