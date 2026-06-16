@@ -1,0 +1,24 @@
+
+> yugantar@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.7 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.181.43.92:3000
+- Environments: .env.local
+✓ Ready in 846ms
+
+○ Compiling / ...
+ GET / 200 in 283ms (next.js: 8ms, application-code: 275ms)
+ GET / 200 in 296ms (next.js: 11ms, application-code: 286ms)
+ GET /explore 200 in 1164ms (next.js: 1086ms, application-code: 78ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /api/ideas 500 in 3.7s (next.js: 1987ms, application-code: 1738ms)
+ GET /api/ideas 500 in 306ms (next.js: 15ms, application-code: 291ms)
+ GET /api/ideas 500 in 342ms (next.js: 54ms, application-code: 288ms)
+ GET /api/ideas 500 in 333ms (next.js: 18ms, application-code: 315ms)
+ GET /explore 200 in 187ms (next.js: 36ms, application-code: 151ms)
+○ Compiling /cave ...
+ GET /cave 200 in 3.8s (next.js: 3.6s, application-code: 192ms)
+ GET / 200 in 140ms (next.js: 24ms, application-code: 117ms)
+ GET / 200 in 307ms (next.js: 9ms, application-code: 298ms)
