@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ERA_CONFIG, type Idea } from "@/lib/ideas";
@@ -10,16 +10,10 @@ import { cn } from "@/lib/utils";
 export default function IdeaDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [idea, setIdea] = useState<Idea | null>(null);
-  const [explanation, setExplanation] = useState("");
-  const [isStreaming, setIsStreaming] = useState(true);
   const [upvotes, setUpvotes] = useState(0);
   const [voted, setVoted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const explanationRef = useRef<HTMLDivElement>(null);
-  const abortedRef = useRef(false);
-  const textRef = useRef("");
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     async function fetchIdea() {
@@ -38,76 +32,6 @@ export default function IdeaDetailPage() {
     fetchIdea();
   }, [id]);
 
-  useEffect(() => {
-    if (!idea) return;
-    const currentIdea = idea;
-
-    async function streamExplanation() {
-      abortedRef.current = false;
-
-      if (currentIdea.ai_explanation) {
-        setExplanation(currentIdea.ai_explanation);
-        setIsStreaming(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/ideas/${id}/explain`);
-        if (!res.ok) {
-          const err = await res.json();
-          setError(err.error ?? "The Oracle is silent.");
-          setIsStreaming(false);
-          return;
-        }
-
-        const reader = res.body?.getReader();
-        if (!reader) {
-          setIsStreaming(false);
-          return;
-        }
-
-        const decoder = new TextDecoder();
-        const scheduleUpdate = () => {
-          if (rafRef.current === null) {
-            rafRef.current = requestAnimationFrame(() => {
-              setExplanation(textRef.current);
-              rafRef.current = null;
-            });
-          }
-        };
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done || abortedRef.current) break;
-          textRef.current += decoder.decode(value, { stream: true });
-          scheduleUpdate();
-        }
-
-        setExplanation(textRef.current);
-        setIsStreaming(false);
-      } catch {
-        if (!abortedRef.current) {
-          setError("The connection faltered. The Oracle's wisdom was lost.");
-          setIsStreaming(false);
-        }
-      }
-    }
-
-    streamExplanation();
-    return () => {
-      abortedRef.current = true;
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
-    };
-  }, [idea, id]);
-
-  useEffect(() => {
-    if (explanationRef.current) {
-      explanationRef.current.scrollTop = explanationRef.current.scrollHeight;
-    }
-  }, [explanation]);
 
   const handleVote = async () => {
     if (voted) return;
@@ -231,70 +155,6 @@ export default function IdeaDetailPage() {
         </div>
       </motion.div>
 
-      {/* ═══ The Oracle ═══ */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.25 }}
-        className="relative mb-14"
-      >
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
-            <span className="text-base text-primary">✦</span>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-primary">
-              The Oracle
-            </p>
-            <p className="text-xs text-text-muted">
-              {isStreaming ? "Composing..." : "Refinement complete"}
-            </p>
-          </div>
-          {isStreaming && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="ml-auto flex gap-1"
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  className="h-1.5 w-1.5 rounded-full bg-primary/60"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
-                />
-              ))}
-            </motion.div>
-          )}
-        </div>
-
-        <div
-          ref={explanationRef}
-          className="max-h-[60vh] overflow-y-auto glass-card p-6 md:p-8"
-        >
-          {explanation ? (
-            <div className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary transition-opacity duration-300">
-              {explanation}
-              {isStreaming && <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-primary" />}
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 text-text-tertiary">
-              <div className="h-4 w-4 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-              <p className="text-sm italic">The Oracle is weaving wisdom...</p>
-            </div>
-          )}
-        </div>
-
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 glass-card px-4 py-3 border-accent/20 bg-accent/5"
-          >
-            <p className="text-sm text-accent">{error}</p>
-          </motion.div>
-        )}
-      </motion.div>
 
       {/* ═══ Voting ═══ */}
       <motion.div
