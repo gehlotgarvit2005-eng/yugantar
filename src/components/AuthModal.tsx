@@ -17,12 +17,10 @@ export function AuthModal() {
     user,
     isAuthModalOpen,
     authModalTab,
-    tempEmail,
     authWarning,
     setAuthWarning,
     closeAuthModal,
     setAuthModalTab,
-    setTempEmail,
     logout,
     refreshUser,
   } = useAuth();
@@ -40,10 +38,6 @@ export function AuthModal() {
   const [ideaDesc, setIdeaDesc] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // OTP Form State
-  const [otp, setOtp] = useState("");
-  const [devOtpHint, setDevOtpHint] = useState<string | null>(null);
-
   // Dashboard / Edit Profile States
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -59,8 +53,6 @@ export function AuthModal() {
   useEffect(() => {
     setErrorMsg("");
     setSuccessMsg("");
-    setOtp("");
-    setDevOtpHint(null);
     if (user && authModalTab === "dashboard") {
       setEditName(user.full_name);
       setEditPhone(user.phone);
@@ -108,7 +100,7 @@ export function AuthModal() {
     }
   };
 
-  // Handle Sign Up (OTP Request) submission
+  // Handle Sign Up — direct account creation without OTP
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -151,71 +143,27 @@ export function AuthModal() {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(data.error || "Failed to start registration.");
+        setErrorMsg(data.error || "Failed to create account.");
       } else {
-        setTempEmail(email.trim());
-        setSuccessMsg("OTP verification code generated.");
-        if (data.otp_hint) {
-          setDevOtpHint(data.otp_hint);
-        }
-        setAuthModalTab("otp");
-      }
-    } catch {
-      setErrorMsg("Connection error. Could not send verification code.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Handle OTP verification
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
-
-    if (!otp.trim()) {
-      setErrorMsg("Please enter the 6-digit OTP code.");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: tempEmail,
-          otp: otp.trim(),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(data.error || "OTP verification failed.");
-        setSubmitting(false);
-      } else {
-        setSuccessMsg("Account verified! Logging you in...");
-        
-        // Auto-login on client side using email & password
+        setSuccessMsg("Account created! Signing you in...");
+        // Auto-login directly
         const loginRes = await supabase.auth.signInWithPassword({
-          email: tempEmail,
+          email: email.trim(),
           password: password,
         });
-
         if (loginRes.error) {
           setErrorMsg("Account created, but auto-login failed. Please sign in manually.");
           setAuthModalTab("signin");
-          setSubmitting(false);
         } else {
           await refreshUser();
           setTimeout(() => {
             closeAuthModal();
-          }, 1200);
+          }, 1000);
         }
       }
     } catch {
-      setErrorMsg("Connection failed. Could not verify OTP.");
+      setErrorMsg("Connection error. Could not create account.");
+    } finally {
       setSubmitting(false);
     }
   };
@@ -588,6 +536,7 @@ export function AuthModal() {
                 </div>
 
                 {errorMsg && <p className="text-xs text-accent bg-accent/5 p-3 rounded-lg border border-accent/10">{errorMsg}</p>}
+                {successMsg && <p className="text-xs text-green-400 bg-green-500/5 p-3 rounded-lg border border-green-500/10">{successMsg}</p>}
 
                 <button
                   type="submit"
@@ -599,10 +548,10 @@ export function AuthModal() {
                     {submitting ? (
                       <>
                         <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                        Generating OTP...
+                        Creating Account...
                       </>
                     ) : (
-                      "Send OTP Code"
+                      "Create Account"
                     )}
                   </span>
                 </button>
@@ -620,86 +569,6 @@ export function AuthModal() {
             </motion.div>
           )}
 
-          {/* ======================================================== */}
-          {/* TAB 3: OTP VERIFICATION                                  */}
-          {/* ======================================================== */}
-          {authModalTab === "otp" && (
-            <motion.div
-              key="otp"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold tracking-tight">Verify Email</h2>
-                <p className="text-xs text-text-tertiary mt-1">
-                  Enter the 6-digit OTP code sent to <strong>{tempEmail}</strong>
-                </p>
-              </div>
-
-              <form onSubmit={handleVerifyOtp} className="space-y-5">
-                <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-1.5 text-center">
-                    6-Digit Verification Code
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ""))}
-                    placeholder="123456"
-                    className="w-32 mx-auto text-center rounded-xl border border-white/[0.08] bg-bg-surface px-4 py-3 text-lg font-bold tracking-[0.25em] placeholder-text-muted focus:border-primary/40 focus:outline-none block"
-                  />
-                </div>
-
-                {/* Developer OTP Helper Hint */}
-                {devOtpHint && (
-                  <div className="p-3 bg-primary/5 border border-primary/20 rounded-xl text-center">
-                    <p className="text-xs text-primary font-medium">
-                      [Dev Hint] Your OTP verification code is: <strong>{devOtpHint}</strong>
-                    </p>
-                  </div>
-                )}
-
-                {errorMsg && <p className="text-xs text-accent bg-accent/5 p-3 rounded-lg border border-accent/10 text-center">{errorMsg}</p>}
-                {successMsg && <p className="text-xs text-green-400 bg-green-500/5 p-3 rounded-lg border border-green-500/10 text-center">{successMsg}</p>}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full rounded-xl px-5 py-3.5 text-sm font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 relative"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-primary to-secondary" />
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    {submitting ? (
-                      <>
-                        <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                        Verifying...
-                      </>
-                    ) : (
-                      "Verify & Create Account"
-                    )}
-                  </span>
-                </button>
-              </form>
-
-              <div className="mt-6 pt-4 border-t border-white/[0.06] text-center text-xs">
-                Didn't receive code?{" "}
-                <button
-                  onClick={() => {
-                    setAuthModalTab("signup");
-                  }}
-                  className="text-primary hover:underline font-medium"
-                >
-                  Go back and resend
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ======================================================== */}
           {/* TAB 4: FORGOT PASSWORD                                   */}
           {/* ======================================================== */}
           {authModalTab === "forgot" && (

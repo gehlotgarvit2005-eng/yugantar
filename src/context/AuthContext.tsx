@@ -14,19 +14,17 @@ export interface UserProfile {
   submission_status: string;
 }
 
-export type AuthTab = "signin" | "signup" | "otp" | "forgot" | "dashboard";
+export type AuthTab = "signin" | "signup" | "forgot" | "dashboard";
 
 interface AuthContextType {
   user: UserProfile | null;
   loading: boolean;
   isAuthModalOpen: boolean;
   authModalTab: AuthTab;
-  tempEmail: string;
   authWarning: string;
   openAuthModal: (tab?: AuthTab, warning?: string) => void;
   closeAuthModal: () => void;
   setAuthModalTab: (tab: AuthTab) => void;
-  setTempEmail: (email: string) => void;
   setAuthWarning: (warning: string) => void;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -39,7 +37,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<AuthTab>("signin");
-  const [tempEmail, setTempEmail] = useState("");
   const [authWarning, setAuthWarning] = useState("");
 
   const refreshUser = async () => {
@@ -128,12 +125,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         isAuthModalOpen,
         authModalTab,
-        tempEmail,
         authWarning,
         openAuthModal,
         closeAuthModal,
         setAuthModalTab,
-        setTempEmail,
         setAuthWarning,
         logout,
         refreshUser,

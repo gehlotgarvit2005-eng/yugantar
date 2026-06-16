@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { tempRegistrations } from "@/lib/otpStore";
 
 export const runtime = "nodejs";
 
@@ -73,11 +72,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Check for duplicate registration in Supabase (Pre-check limit 1000 users)
+    // 5. Check for duplicate registration in Supabase
     try {
       const { data: listData, error: listError } =
         await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
-      
+
       if (!listError && listData?.users) {
         const exists = listData.users.some(
           (u) => u.email?.toLowerCase() === email.trim().toLowerCase()
@@ -90,45 +89,44 @@ export async function POST(request: Request) {
         }
       }
     } catch (searchErr) {
-      console.warn("Supabase user pre-check check warning:", searchErr);
+      console.warn("Supabase user pre-check warning:", searchErr);
     }
 
-    // 6. Generate 6-digit OTP code
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
-
-    // 7. Store temporary registration info
-    tempRegistrations.set(email.trim().toLowerCase(), {
-      otp,
-      expiresAt,
-      data: {
+    // 6. Create user directly in Supabase (no OTP required)
+    const { data: userCreate, error: createError } =
+      await supabaseAdmin.auth.admin.createUser({
+        email: email.trim().toLowerCase(),
         password,
-        full_name: full_name.trim(),
-        phone: phone.trim(),
-        team_name: team_name.trim(),
-        idea_title: idea_title?.trim() || "",
-        idea_description: idea_description?.trim() || "",
-      },
-    });
+        email_confirm: true,
+        user_metadata: {
+          full_name: full_name.trim(),
+          phone: phone.trim(),
+          team_name: team_name.trim(),
+          idea_title: idea_title?.trim() || "",
+          idea_description: idea_description?.trim() || "",
+          submission_status: "Pending",
+        },
+      });
 
-    // 8. Log the OTP code in a prominent terminal box for developer access
-    console.log("\n");
-    console.log("┌──────────────────────────────────────────────────────────┐");
-    console.log("│             YUGANTAR 2026 - EMAIL VERIFICATION OTP       │");
-    console.log("├──────────────────────────────────────────────────────────┤");
-    console.log(`│  Email:    ${email.trim().toLowerCase().padEnd(46)}│`);
-    console.log(`│  OTP Code: ${otp.padEnd(46)}│`);
-    console.log("│                                                          │");
-    console.log("│  Dev Note: Copy and enter this code in the verification  │");
-    console.log("│            screen to complete registration.              │");
-    console.log("└──────────────────────────────────────────────────────────┘");
-    console.log("\n");
+    if (createError) {
+      console.error("Supabase user creation error:", createError);
+      const isDuplicate =
+        createError.message?.toLowerCase().includes("already exists") ||
+        createError.message?.toLowerCase().includes("registered");
+      return NextResponse.json(
+        {
+          error: isDuplicate
+            ? "This email is already registered."
+            : createError.message ?? "Failed to create user account.",
+        },
+        { status: isDuplicate ? 400 : 500 }
+      );
+    }
 
     return NextResponse.json(
       {
-        message: "Verification OTP code sent. Check developer terminal console.",
-        // We can pass a hint in development mode so they don't even have to look at terminal if they prefer
-        otp_hint: process.env.NODE_ENV === "development" ? otp : undefined,
+        message: "Account created successfully.",
+        user: userCreate.user,
       },
       { status: 200 }
     );
