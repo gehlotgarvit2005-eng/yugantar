@@ -65,7 +65,7 @@ export default function IdeaDetailPage() {
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="mt-5 text-sm text-text-tertiary"
           >
-            The Oracle is consulting the ages...
+            Retrieving the idea...
           </motion.p>
         </motion.div>
       </div>

@@ -391,20 +391,7 @@ function IdeaCard({ idea, index }: { idea: Idea; index: number }) {
         &ldquo;{idea.text}&rdquo;
       </blockquote>
 
-      {/* Status badge */}
-      <div className="mt-3">
-        {idea.ai_explanation ? (
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-accent/70">
-            <span className="h-1 w-1 rounded-full bg-accent" />
-            Oracle has spoken
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-text-muted">
-            <span className="h-1 w-1 rounded-full bg-text-muted" />
-            Awaiting the Oracle
-          </span>
-        )}
-      </div>
+
 
       {/* Author */}
       <div className="mt-4 flex items-center gap-2.5 pt-4 border-t border-white/[0.04]">

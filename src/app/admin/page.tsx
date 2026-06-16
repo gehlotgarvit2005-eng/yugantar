@@ -468,8 +468,7 @@ export default function AdminPortal() {
       list = list.filter(
         i =>
           i.author.toLowerCase().includes(q) ||
-          i.text.toLowerCase().includes(q) ||
-          (i.ai_explanation && i.ai_explanation.toLowerCase().includes(q))
+          i.text.toLowerCase().includes(q)
       );
     }
 
@@ -1300,16 +1299,6 @@ export default function AdminPortal() {
                     &ldquo;{selectedIdea.text}&rdquo;
                   </div>
                 </div>
-
-                {/* AI Oracle Explanation */}
-                {selectedIdea.ai_explanation && (
-                  <div>
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-accent block mb-2">🤖 Oracle AI Interpretation</span>
-                    <div className="p-4 rounded-xl bg-accent/[0.02] border border-accent/10 text-xs text-text-secondary leading-relaxed italic max-h-40 overflow-y-auto">
-                      {selectedIdea.ai_explanation}
-                    </div>
-                  </div>
-                )}
 
                 {/* Form to review */}
                 <form onSubmit={handleSaveReview} className="space-y-4 pt-4 border-t border-white/[0.06]">
