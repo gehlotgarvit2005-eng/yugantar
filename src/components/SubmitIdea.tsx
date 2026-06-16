@@ -11,7 +11,7 @@ import { supabase } from "@/lib/supabase";
 export function SubmitIdea() {
   const router = useRouter();
   const { user, openAuthModal, refreshUser } = useAuth();
-  
+
   const [text, setText] = useState("");
   const [author, setAuthor] = useState(user ? user.full_name : "");
   const [era, setEra] = useState<IdeaEra>("fire");
@@ -32,15 +32,18 @@ export function SubmitIdea() {
     e.preventDefault();
     setError("");
 
+    // Require login on submit
     if (!user) {
       openAuthModal("signin", "Please sign in or create an account to submit your idea.");
       return;
     }
 
-    if (!text.trim() || !author.trim()) {
-      setError("The gallery awaits your thought and your name.");
+    if (!text.trim()) {
+      setError("Please write your idea before submitting.");
       return;
     }
+
+    const authorName = author.trim() || user.full_name || "Anonymous";
 
     setSubmitting(true);
 
@@ -48,7 +51,7 @@ export function SubmitIdea() {
       const res = await fetch("/api/ideas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), author: author.trim(), era }),
+        body: JSON.stringify({ text: text.trim(), author: authorName, era }),
       });
 
       const data = await res.json();
@@ -80,28 +83,6 @@ export function SubmitIdea() {
       setSubmitting(false);
     }
   };
-
-  if (!user) {
-    return (
-      <div className="text-center py-8 px-6 border border-dashed border-white/[0.08] rounded-2xl bg-white/[0.01] backdrop-blur-sm">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.04] border border-white/[0.06] text-accent mx-auto mb-4 text-lg">
-          🔒
-        </div>
-        <h3 className="text-sm font-bold text-white mb-1.5">Locked for Guests</h3>
-        <p className="text-xs text-text-tertiary mb-5">
-          Please sign in or create an account to submit your idea.
-        </p>
-        <button
-          type="button"
-          onClick={() => openAuthModal("signin", "Please sign in or create an account to submit your idea.")}
-          className="relative inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-        >
-          <span className="absolute inset-0 bg-gradient-to-r from-primary to-secondary" />
-          <span className="relative z-10">Sign In / Register</span>
-        </button>
-      </div>
-    );
-  }
 
   if (success) {
     return (
@@ -136,7 +117,7 @@ export function SubmitIdea() {
           placeholder="What brilliance lies in your mind?"
           rows={3}
           maxLength={280}
-          className="w-full resize-none rounded-xl border border-white/[0.08] bg-bg-surface p-4 text-sm text-text-secondary placeholder-text-muted transition-all focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          className="w-full resize-none rounded-xl border border-white/[0.10] bg-white/[0.04] p-4 text-sm text-white placeholder-text-muted transition-all focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20"
         />
         <p className="mt-1.5 text-right text-xs text-text-muted">
           {text.length}/280
@@ -151,15 +132,19 @@ export function SubmitIdea() {
         >
           Your Name
         </label>
-        <input
-          id="idea-author"
-          type="text"
-          value={author}
-          disabled
-          placeholder="Your profile name"
-          maxLength={40}
-          className="w-full rounded-xl border border-white/[0.08] bg-bg-surface/50 px-4 py-3 text-sm text-text-muted cursor-not-allowed select-none focus:outline-none"
-        />
+        {user ? (
+          <input
+            id="idea-author"
+            type="text"
+            value={author}
+            disabled
+            className="w-full rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm text-white/70 cursor-not-allowed select-none focus:outline-none"
+          />
+        ) : (
+          <div className="w-full rounded-xl border border-dashed border-white/[0.15] bg-white/[0.02] px-4 py-3 text-sm text-text-muted italic">
+            Sign in to use your profile name
+          </div>
+        )}
       </div>
 
       {/* Era selector */}
@@ -181,10 +166,8 @@ export function SubmitIdea() {
                 className={cn(
                   "flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all",
                   selected
-                    ? cn(
-                        "border border-primary/20 bg-primary/5 text-primary"
-                      )
-                    : "border-white/[0.06] text-text-muted hover:border-white/[0.12] hover:text-text-tertiary"
+                    ? "border-primary/30 bg-primary/10 text-primary"
+                    : "border-white/[0.10] text-text-muted hover:border-white/[0.20] hover:text-white"
                 )}
               >
                 <span>{cfg.icon}</span>
@@ -219,7 +202,14 @@ export function SubmitIdea() {
           {submitting ? (
             <>
               <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              Consulting the Oracle...
+              Submitting...
+            </>
+          ) : !user ? (
+            <>
+              <span>Sign In to Submit</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
             </>
           ) : (
             <>
@@ -231,6 +221,28 @@ export function SubmitIdea() {
           )}
         </span>
       </motion.button>
+
+      {/* Guest hint */}
+      {!user && (
+        <p className="text-center text-xs text-text-muted">
+          <button
+            type="button"
+            onClick={() => openAuthModal("signin", "Sign in to submit your idea to the gallery.")}
+            className="text-primary hover:underline font-medium"
+          >
+            Sign in
+          </button>{" "}
+          or{" "}
+          <button
+            type="button"
+            onClick={() => openAuthModal("signup")}
+            className="text-primary hover:underline font-medium"
+          >
+            create an account
+          </button>{" "}
+          to share your idea.
+        </p>
+      )}
     </form>
   );
 }
