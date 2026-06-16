@@ -117,7 +117,7 @@ export function SubmitIdea() {
           placeholder="What brilliance lies in your mind?"
           rows={3}
           maxLength={280}
-          className="w-full resize-none rounded-xl border border-white/[0.10] bg-white/[0.04] p-4 text-sm text-white placeholder-text-muted transition-all focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          className="w-full resize-none rounded-xl border border-white/20 bg-white/[0.06] p-4 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
         />
         <p className="mt-1.5 text-right text-xs text-text-muted">
           {text.length}/280
@@ -138,7 +138,7 @@ export function SubmitIdea() {
             type="text"
             value={author}
             disabled
-            className="w-full rounded-xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm text-white/70 cursor-not-allowed select-none focus:outline-none"
+            className="w-full rounded-xl border border-white/20 bg-white/[0.06] px-4 py-3 text-sm text-white/70 cursor-not-allowed select-none focus:outline-none"
           />
         ) : (
           <div className="w-full rounded-xl border border-dashed border-white/[0.15] bg-white/[0.02] px-4 py-3 text-sm text-text-muted italic">

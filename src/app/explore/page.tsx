@@ -151,21 +151,21 @@ export default function ExplorePage() {
         </div>
 
         {/* ═══ Submit Idea ═══ */}
-        <ScrollReveal className="mb-16">
+        <div className="mb-16">
           <div className="glass-card p-8 md:p-10 border-primary/10 bg-primary/[0.02]">
             <div className="mb-6 text-center">
               <h2 className="text-xl font-bold text-white">
                 Submit Your Idea
               </h2>
               <p className="mt-1 text-sm text-text-tertiary">
-                Speak your thought. The Oracle will refine it into something timeless.
+                Speak your thought. Share it with the Yugantar community.
               </p>
             </div>
             <div className="mx-auto" style={{ maxWidth: "500px" }}>
               <SubmitIdea />
             </div>
           </div>
-        </ScrollReveal>
+        </div>
 
         {/* ═══ Ideas Grid ═══ */}
         {loading ? (
