@@ -33,8 +33,10 @@ export function ScrollReveal({
   return (
     <motion.div
       initial={{
-        opacity: 0,
-        ...directionMap[direction],
+        opacity: 0.8,
+        ...Object.fromEntries(
+          Object.entries(directionMap[direction]).map(([k, v]) => [k, (v as number) * 0.4])
+        ),
       }}
       animate={{
         opacity: 1,

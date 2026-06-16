@@ -27,7 +27,7 @@ export function WordReveal({
   if (mode === "blur") {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+        initial={{ opacity: 0.8, y: 10, filter: "blur(3px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }}
       >
@@ -45,7 +45,7 @@ export function WordReveal({
         <motion.span
           key={i}
           className={cn("inline-block", letterClassName)}
-          initial={{ opacity: 0, y: mode === "word" ? 30 : 20, filter: "blur(4px)" }}
+          initial={{ opacity: 0.8, y: mode === "word" ? 15 : 10, filter: "blur(2px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{
             duration: 0.5,
@@ -78,7 +78,7 @@ export function FadeInView({
 }: FadeInViewProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y }}
+      initial={{ opacity: 0.8, y: y * 0.5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}
@@ -97,7 +97,7 @@ interface ScaleInViewProps {
 export function ScaleInView({ children, className, delay = 0 }: ScaleInViewProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      initial={{ opacity: 0.8, scale: 0.95, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}

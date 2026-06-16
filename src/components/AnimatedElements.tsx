@@ -21,7 +21,7 @@ export function AnimatedHeading({ text, as: Tag = "h2", className = "", delay = 
         <motion.span
           key={i}
           className="inline-block mr-[0.3em]"
-          initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+          initial={{ opacity: 0.8, y: 15, filter: "blur(4px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{
             duration: 0.5,
@@ -48,7 +48,7 @@ export function AnimatedText({ text, className = "", delay = 0 }: AnimatedTextPr
   return (
     <motion.p
       className={className}
-      initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+      initial={{ opacity: 0.8, y: 10, filter: "blur(2px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }}
     >
@@ -69,7 +69,7 @@ export function AnimatedSection({ children, className = "", delay = 0 }: Animate
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0.8, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }}
     >
@@ -103,6 +103,6 @@ export function StaggerContainer({ children, className = "", staggerDelay = 0.08
 }
 
 export const staggerItem = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0.8, y: 10 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
 } as const;

@@ -21,7 +21,7 @@ export function LoaderOrchestrator({ children }: { children: React.ReactNode }) 
   };
 
   if (!isMounted) {
-    return <div className="opacity-0">{children}</div>;
+    return <div className="min-h-full flex flex-col flex-1">{children}</div>;
   }
 
   return (

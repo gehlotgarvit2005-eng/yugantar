@@ -284,11 +284,11 @@ export function HeroBackground() {
         </MotionDiv>
       </div>
 
-      {/* Dark vignette overlay for depth */}
+      {/* Dark vignette overlay for depth — subtle, not a black mask */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)",
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.2) 100%)",
         }}
       />
     </div>
