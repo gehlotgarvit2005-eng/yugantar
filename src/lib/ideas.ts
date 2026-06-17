@@ -16,6 +16,10 @@ export interface Idea {
   review_notes?: string;
   review_history?: any[];
   deleted_at?: string | null;
+  email?: string | null;
+  college?: string | null;
+  school?: string | null;
+  mobile?: string | null;
 }
 
 export const IDEAS: Idea[] = [

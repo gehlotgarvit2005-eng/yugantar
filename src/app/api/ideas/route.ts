@@ -22,7 +22,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { text, author, era } = body;
+    const { text, author, era, email, college, school, mobile } = body;
 
     if (!text?.trim() || !author?.trim() || !era) {
       return NextResponse.json(
@@ -44,6 +44,10 @@ export async function POST(request: Request) {
         text: text.trim(),
         author: author.trim(),
         era,
+        email: email?.trim() || null,
+        college: college?.trim() || null,
+        school: school?.trim() || null,
+        mobile: mobile?.trim() || null,
         upvotes: 0,
         featured: false,
       })

@@ -14,6 +14,10 @@ export function SubmitIdea() {
 
   const [text, setText] = useState("");
   const [author, setAuthor] = useState(user ? user.full_name : "");
+  const [email, setEmail] = useState("");
+  const [college, setCollege] = useState("");
+  const [school, setSchool] = useState("");
+  const [mobile, setMobile] = useState("");
   const [era, setEra] = useState<IdeaEra>("fire");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -51,7 +55,15 @@ export function SubmitIdea() {
       const res = await fetch("/api/ideas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), author: authorName, era }),
+        body: JSON.stringify({
+          text: text.trim(),
+          author: authorName,
+          era,
+          email: email.trim() || undefined,
+          college: college.trim() || undefined,
+          school: school.trim() || undefined,
+          mobile: mobile.trim() || undefined,
+        }),
       });
 
       const data = await res.json();
@@ -145,6 +157,78 @@ export function SubmitIdea() {
             Sign in to use your profile name
           </div>
         )}
+      </div>
+
+      {/* Email */}
+      <div>
+        <label
+          htmlFor="idea-email"
+          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
+        >
+          Email
+        </label>
+        <input
+          id="idea-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+        />
+      </div>
+
+      {/* College */}
+      <div>
+        <label
+          htmlFor="idea-college"
+          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
+        >
+          College
+        </label>
+        <input
+          id="idea-college"
+          type="text"
+          value={college}
+          onChange={(e) => setCollege(e.target.value)}
+          placeholder="Your college name"
+          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+        />
+      </div>
+
+      {/* School */}
+      <div>
+        <label
+          htmlFor="idea-school"
+          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
+        >
+          School
+        </label>
+        <input
+          id="idea-school"
+          type="text"
+          value={school}
+          onChange={(e) => setSchool(e.target.value)}
+          placeholder="Your school name"
+          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+        />
+      </div>
+
+      {/* Mobile */}
+      <div>
+        <label
+          htmlFor="idea-mobile"
+          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
+        >
+          Mobile Number
+        </label>
+        <input
+          id="idea-mobile"
+          type="tel"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          placeholder="Your mobile number"
+          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+        />
       </div>
 
       {/* Era selector */}
