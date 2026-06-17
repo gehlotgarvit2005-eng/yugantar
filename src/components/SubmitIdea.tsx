@@ -15,8 +15,8 @@ export function SubmitIdea() {
   const [text, setText] = useState("");
   const [author, setAuthor] = useState(user ? user.full_name : "");
   const [email, setEmail] = useState("");
-  const [college, setCollege] = useState("");
-  const [school, setSchool] = useState("");
+  const [institutionType, setInstitutionType] = useState<"college" | "school" | null>(null);
+  const [institutionName, setInstitutionName] = useState("");
   const [mobile, setMobile] = useState("");
   const [era, setEra] = useState<IdeaEra>("fire");
   const [submitting, setSubmitting] = useState(false);
@@ -60,8 +60,8 @@ export function SubmitIdea() {
           author: authorName,
           era,
           email: email.trim() || undefined,
-          college: college.trim() || undefined,
-          school: school.trim() || undefined,
+          college: institutionType === "college" ? institutionName.trim() || undefined : undefined,
+          school: institutionType === "school" ? institutionName.trim() || undefined : undefined,
           mobile: mobile.trim() || undefined,
         }),
       });
@@ -177,41 +177,58 @@ export function SubmitIdea() {
         />
       </div>
 
-      {/* College */}
+      {/* Institution Type Selector */}
       <div>
-        <label
-          htmlFor="idea-college"
-          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
-        >
-          College
+        <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted">
+          Institution Type
         </label>
-        <input
-          id="idea-college"
-          type="text"
-          value={college}
-          onChange={(e) => setCollege(e.target.value)}
-          placeholder="Your college name"
-          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
-        />
+        <div className="flex gap-3">
+          {(["college", "school"] as const).map((type) => {
+            const selected = institutionType === type;
+            return (
+              <motion.button
+                key={type}
+                type="button"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setInstitutionType(selected ? null : type);
+                  setInstitutionName("");
+                }}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all",
+                  selected
+                    ? "border-primary/30 bg-primary/10 text-primary"
+                    : "border-border-default bg-bg-dark text-text-muted hover:border-white/[0.20] hover:text-white"
+                )}
+              >
+                <span>{type === "college" ? "🎓" : "🏫"}</span>
+                <span>{type === "college" ? "College" : "School"}</span>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* School */}
-      <div>
-        <label
-          htmlFor="idea-school"
-          className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
-        >
-          School
-        </label>
-        <input
-          id="idea-school"
-          type="text"
-          value={school}
-          onChange={(e) => setSchool(e.target.value)}
-          placeholder="Your school name"
-          className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
-        />
-      </div>
+      {/* Institution Name (shown only when type is selected) */}
+      {institutionType && (
+        <div>
+          <label
+            htmlFor="idea-institution"
+            className="mb-2 block text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted"
+          >
+            {institutionType === "college" ? "College Name" : "School Name"}
+          </label>
+          <input
+            id="idea-institution"
+            type="text"
+            value={institutionName}
+            onChange={(e) => setInstitutionName(e.target.value)}
+            placeholder={institutionType === "college" ? "Enter your college name" : "Enter your school name"}
+            className="w-full rounded-xl border border-border-default bg-bg-dark px-4 py-3 text-sm text-white placeholder-text-muted transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+      )}
 
       {/* Mobile */}
       <div>
