@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useLayoutEffect, useState, useCallback } from "react";
 
 type Theme = "light" | "dark";
 
@@ -12,45 +12,43 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  try {
+    const saved = localStorage.getItem("theme") as Theme | null;
+    if (saved === "light" || saved === "dark") return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  } catch {
+    return "dark";
+  }
+}
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.toggle("light", theme === "light");
+  root.classList.toggle("dark", theme === "dark");
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
 
-  useEffect(() => {
-    // Determine initial theme on mount
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
-    const initialTheme: Theme = savedTheme || (systemPrefersDark ? "dark" : "light");
+  // useLayoutEffect runs synchronously before the browser paints,
+  // so the correct theme classes are applied before the user sees anything.
+  useLayoutEffect(() => {
+    const initialTheme = getInitialTheme();
     setThemeState(initialTheme);
-    
-    // Apply class to HTML element
-    const root = document.documentElement;
-    if (initialTheme === "light") {
-      root.classList.remove("dark");
-      root.classList.add("light");
-    } else {
-      root.classList.remove("light");
-      root.classList.add("dark");
-    }
+    applyTheme(initialTheme);
   }, []);
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
     localStorage.setItem("theme", newTheme);
-    
-    const root = document.documentElement;
-    if (newTheme === "light") {
-      root.classList.remove("dark");
-      root.classList.add("light");
-    } else {
-      root.classList.remove("light");
-      root.classList.add("dark");
-    }
-  };
+    applyTheme(newTheme);
+  }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(theme === "light" ? "dark" : "light");
-  };
+  }, [theme, setTheme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>

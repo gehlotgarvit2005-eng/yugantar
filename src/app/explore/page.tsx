@@ -151,8 +151,8 @@ export default function ExplorePage() {
         </div>
 
         {/* ═══ Submit Idea ═══ */}
-        <div className="mb-16">
-          <div className="glass-card p-8 md:p-10 border-primary/10 bg-primary/[0.02]">
+        <div className="relative z-10 mb-16">
+          <div className="rounded-2xl p-8 md:p-10 border border-primary/20 bg-bg-surface/90 backdrop-blur-xl shadow-lg shadow-primary/5">
             <div className="mb-6 text-center">
               <h2 className="text-xl font-bold text-white">
                 Submit Your Idea
@@ -166,6 +166,7 @@ export default function ExplorePage() {
             </div>
           </div>
         </div>
+
 
         {/* ═══ Ideas Grid ═══ */}
         {loading ? (
